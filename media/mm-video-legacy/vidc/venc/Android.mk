@@ -49,12 +49,12 @@ libmm-venc-inc      += $(OMX_VIDEO_PATH)/vidc/common/inc
 libmm-venc-inc      += hardware/qcom/media/mm-core/inc
 libmm-venc-inc      += hardware/qcom/media/libstagefrighthw
 
-libmm-venc-inc      += device/sony/nozomi/display/libgralloc
+libmm-venc-inc      += device/sony/aoba/display/libgralloc
 
 libmm-venc-inc      += frameworks/native/include/media/hardware
 libmm-venc-inc      += frameworks/native/include/media/openmax
-libmm-venc-inc      += device/sony/nozomi/media/libc2dcolorconvert
-libmm-venc-inc      += device/sony/nozomi/display/libcopybit
+libmm-venc-inc      += device/sony/aoba/media/libc2dcolorconvert
+libmm-venc-inc      += device/sony/aoba/display/libcopybit
 libmm-venc-inc      += frameworks/av/include/media/stagefright
 
 

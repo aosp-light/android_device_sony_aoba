@@ -27,13 +27,13 @@ PRODUCT_COPY_FILES += device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 # Discard inherited values and use our own instead.
-PRODUCT_NAME := full_nozomi
-PRODUCT_DEVICE := nozomi
+PRODUCT_NAME := full_aoba
+PRODUCT_DEVICE := aoba
 PRODUCT_BRAND := Sony
-PRODUCT_MODEL := Xperia S
+PRODUCT_MODEL := Xperia Ion
 PRODUCT_MANUFACTURER := Sony
 PRODUCT_RESTRICT_VENDOR_FILES := false
 
 # Inherit from hardware-specific part of the product configuration
-$(call inherit-product, device/sony/nozomi/device.mk)
-$(call inherit-product-if-exists, vendor/sony/nozomi/device-vendor.mk)
+$(call inherit-product, device/sony/aoba/device.mk)
+$(call inherit-product-if-exists, vendor/sony/aoba/device-vendor.mk)

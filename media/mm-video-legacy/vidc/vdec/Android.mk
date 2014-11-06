@@ -59,17 +59,17 @@ libmm-vdec-inc          += hardware/qcom/media/mm-core/inc
 #DRM include - Interface which loads the DRM library
 libmm-vdec-inc	        += $(OMX_VIDEO_PATH)/DivxDrmDecrypt/inc
 
-libmm-vdec-inc          += device/sony/nozomi/display/libgralloc
+libmm-vdec-inc          += device/sony/aoba/display/libgralloc
 
 libmm-vdec-inc          += frameworks/native/include/media/openmax
 libmm-vdec-inc          += frameworks/native/include/media/hardware
-libmm-vdec-inc          += device/sony/nozomi/media/libc2dcolorconvert
+libmm-vdec-inc          += device/sony/aoba/media/libc2dcolorconvert
 
-libmm-vdec-inc          += device/sony/nozomi/display/libcopybit
+libmm-vdec-inc          += device/sony/aoba/display/libcopybit
 libmm-vdec-inc          += frameworks/av/include/media/stagefright
 
-libmm-vdec-inc          += device/sony/nozomi/display/libqservice
-libmm-vdec-inc          += device/sony/nozomi/display/libqdutils
+libmm-vdec-inc          += device/sony/aoba/display/libqservice
+libmm-vdec-inc          += device/sony/aoba/display/libqdutils
 
 
 LOCAL_MODULE                    := libOmxVdec

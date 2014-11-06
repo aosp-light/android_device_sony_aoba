@@ -35,7 +35,7 @@ COMMON_GLOBAL_CFLAGS += -DLEGACY_BLOB_COMPATIBLE
 
 # display
 USE_OPENGL_RENDERER := true
-BOARD_EGL_CFG := device/sony/nozomi/config/egl.cfg
+BOARD_EGL_CFG := device/sony/aoba/config/egl.cfg
 
 TARGET_USES_ION := true
 TARGET_USES_OVERLAY := true
@@ -48,7 +48,7 @@ BOARD_USES_ALSA_AUDIO := true
 # bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= device/sony/nozomi/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= device/sony/aoba/bluetooth
 
 # sensor
 BOARD_USES_GENERIC_INVENSENSE := false
@@ -96,10 +96,10 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1056964608
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 2147483648
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-BOARD_CUSTOM_MKBOOTIMG := device/sony/nozomi/tools/mkelf.py
+BOARD_CUSTOM_MKBOOTIMG := device/sony/aoba/tools/mkelf.py
 BOARD_MKBOOTIMG_ARGS := \
-	out/target/product/nozomi/kernel@0x40208000 \
-	out/target/product/nozomi/ramdisk.img@0x41500000,ramdisk \
-	vendor/sony/nozomi/proprietary/boot/RPM.bin@0x20000,rpm
+	out/target/product/aoba/kernel@0x40208000 \
+	out/target/product/aoba/ramdisk.img@0x41500000,ramdisk \
+	vendor/sony/aoba/proprietary/boot/RPM.bin@0x20000,rpm
 
--include vendor/sony/nozomi/BoardConfigVendor.mk
+-include vendor/sony/aoba/BoardConfigVendor.mk
