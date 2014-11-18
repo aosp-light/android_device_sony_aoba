@@ -228,6 +228,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     qemu.hw.mainkeys=1
 
+# Recovery
+PRODUCT_PACKAGES += \
+    extract_elf_ramdisk
+
 PRODUCT_TAGS += dalvik.gc.type-precise
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)

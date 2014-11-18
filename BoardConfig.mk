@@ -27,6 +27,8 @@ TARGET_CPU_SMP := true
 TARGET_CPU_VARIANT := cortex-a8
 TARGET_ARCH := arm
 TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_ARCH_VARIANT_CPU := cortex-a8
+ARCH_ARM_HAVE_TLS_REGISTER := true
 
 # compile flag
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
@@ -87,20 +89,20 @@ BOARD_HAVE_FMRADIO_BCM := true
 # board
 TARGET_BOARD_PLATFORM := msm8660
 TARGET_BOOTLOADER_BOARD_NAME := fuji
+TARGET_VENDOR_PLATFORM := fuji
+TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 
-# Enable dex-preoptimization to speed up first boot sequence
-ifeq ($(HOST_OS),linux)
-  ifeq ($(TARGET_BUILD_VARIANT),user)
-    ifeq ($(WITH_DEXPREOPT),)
-      WITH_DEXPREOPT := true
-    endif
-  endif
-endif
-DONT_DEXPREOPT_PREBUILTS := true
 
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_RECOVERY := true
+TARGET_NO_RADIOIMAGE := true
 TARGET_BOOTLOADER_TYPE := fastboot
+BOARD_HAS_NO_MISC_PARTITION := true
+
+# kernel
+BOARD_KERNEL_ADDR	:= 0x40208000
+BOARD_RAMDISK_ADDR	:= 0x41500000
+BOARD_RPM_ADDR		:= 0x20000
 
 # image
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -108,11 +110,31 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1056964608
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 2147483648
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-BOARD_CUSTOM_MKBOOTIMG := device/sony/aoba/tools/mkelf.py
-BOARD_MKBOOTIMG_ARGS := \
-	out/target/product/aoba/kernel@0x40208000 \
-	out/target/product/aoba/ramdisk.img@0x41500000,ramdisk \
-	vendor/sony/aoba/proprietary/boot/RPM.bin@0x20000,rpm
+# Recovery
+TARGET_RECOVERY_FSTAB := device/sony/nozomi/config/recovery.fstab
+RECOVERY_FSTAB_VERSION := 2
+
+# Twrp recovery - not used
+#TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+#TARGET_RECOVERY_PRE_COMMAND := "touch /cache/recovery/boot;sync;"
+#TARGET_RECOVERY_INITRC := device/sony/nozomi/recovery/init.rc
+#DEVICE_RESOLUTION := 720x1280
+#RECOVERY_GRAPHICS_USE_LINELENGTH := true
+#BOARD_HAS_NO_REAL_SDCARD := true
+#TARGET_NO_SEPARATE_RECOVERY := true
+#TW_NO_USB_STORAGE := true
+#BOARD_HAS_NO_SELECT_BUTTON := true
+#BOARD_SDCARD_INTERNAL_DEVICE := /dev/block/mmcblk0p15
+#BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x01400000
+
+# OTA
+TARGET_OTA_ASSERT_DEVICE := LT26i,nozomi
+
+# custom boot
+BOARD_CUSTOM_BOOTIMG_MK := device/sony/nozomi/custombootimg.mk
+
+# custom ota
+BOARD_CUSTOM_OTA_MK := device/sony/nozomi/customota.mk
 
 -include vendor/sony/aoba/BoardConfigVendor.mk
 
@@ -121,3 +143,4 @@ USE_MINIKIN := true
 
 # Include an expanded selection of fonts
 EXTENDED_FONT_FOOTPRINT := true
+
