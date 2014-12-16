@@ -1,0 +1,9 @@
+# semc_fuji_aoba twrp fstab
+/boot			emmc	/dev/block/platform/msm_sdcc.1/by-num/p1
+/recovery		emmc	/dev/block/platform/msm_sdcc.1/by-num/p14
+/system			ext4	/dev/block/platform/msm_sdcc.1/by-num/p15
+/cache			ext4	/dev/block/platform/msm_sdcc.1/by-num/p16
+/data			ext4	/dev/block/platform/msm_sdcc.1/by-num/p17	length=-16384
+/sdcard			vfat	/dev/block/platform/msm_sdcc.1/by-num/p18	flags=display="Internal Storage";storage;wipeingui;removable
+/external_sd		vfat	/dev/block/mmcblk1p1	/dev/block/mmcblk1	flags=display="External Storage";storage;wipeingui;removable
+/usb-otg		vfat	/dev/block/sda1         /dev/block/sda		flags=display="USB Flash Drive";storage;wipeingui;removable

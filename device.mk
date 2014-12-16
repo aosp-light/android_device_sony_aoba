@@ -1,23 +1,20 @@
 #
-# Copyright 2012 The Android Open Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Copyright 2014-2015, BPaul
 #
 
-# define build target(normal/native/loop)
-BUILD_TARGET := normal
+TARGET_PREBUILT_KERNEL := device/sony/aoba-kernel/zImage
+PRODUCT_COPY_FILES += $(TARGET_PREBUILT_KERNEL):kernel
 
-# overlay
+# Copy all others kernel modules under the "modules" directory to system/lib/modules
+PRODUCT_COPY_FILES += $(shell test -d device/sony/aoba-kernel/modules && \
+	find device/sony/aoba-kernel/modules -name '*.ko' \
+	-printf '%p:system/lib/modules/%f ')
+
+# Kernel
+PRODUCT_PACKAGES += \
+    kernel
+
+# Overlay
 DEVICE_PACKAGE_OVERLAYS += device/sony/aoba/overlay
 
 # This device is xhdpi.  However the platform doesn't
@@ -26,10 +23,6 @@ DEVICE_PACKAGE_OVERLAYS += device/sony/aoba/overlay
 # if the xhdpi doesn't exist.
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
-
-# kernel
-PRODUCT_PACKAGES += \
-    kernel
 
 # Light
 PRODUCT_PACKAGES += \
@@ -57,8 +50,8 @@ PRODUCT_PACKAGES += \
     audio.primary.msm8660 \
     audio.a2dp.default \
     audio.usb.default \
-	audio.r_submix.default \
-	libaudio-resampler
+    audio.r_submix.default \
+    libaudio-resampler
 
 PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
@@ -66,7 +59,9 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
     $(LOCAL_PATH)/config/media_codecs.xml:system/etc/media_codecs.xml \
     $(LOCAL_PATH)/config/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/config/audio_policy.conf:system/etc/audio_policy.conf \
+    $(LOCAL_PATH)/config/audio_policy.conf:system/etc/audio_policy.conf
+
+PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/mixer_paths.xml:system/etc/mixer_paths.xml
 
 # NFC
@@ -100,8 +95,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/calibration:system/etc/wifi/calibration
 
-WIFI_BAND := 802_11_BG
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4330/device-bcm.mk)
+
+# Semc bcmdhd
+$(call inherit-product-if-exists, device/sony/fuji/bcmdhd_semc/semc-bcm.mk)
 
 # DASH
 PRODUCT_PACKAGES += \
@@ -112,10 +109,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
    $(LOCAL_PATH)/config/sensors.conf:system/etc/sensors.conf
-
-# GPS
-PRODUCT_COPY_FILES += \
-     $(LOCAL_PATH)/config/gps.conf:system/etc/gps.conf
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -148,11 +141,12 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/flashled_calc_parameters.cfg:system/etc/flashled_calc_parameters.cfg \
     $(LOCAL_PATH)/config/iddd.conf:system/etc/iddd.conf \
     $(LOCAL_PATH)/config/qosmgr_rules.xml:system/etc/qosmgr_rules.xml \
-    $(LOCAL_PATH)/config/thermald-semc.conf:system/etc/thermald-semc.conf
+    $(LOCAL_PATH)/config/thermald.conf:system/etc/thermald.conf
 
 # Common Qualcomm / Sony scripts
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/config/init.usbmode.sh:root/init.usbmode.sh \
+    $(LOCAL_PATH)/config/logo.rle:root/logo.rle \
+    $(LOCAL_PATH)/config/init.sony.usb.rc:root/init.sony.usb.rc \
     $(LOCAL_PATH)/config/init.qcom.sh:root/init.qcom.sh \
     $(LOCAL_PATH)/config/init.qcom.class_core.sh:root/init.qcom.class_core.sh \
     $(LOCAL_PATH)/config/init.qcom.class_main.sh:root/init.qcom.class_main.sh \
@@ -168,24 +162,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/init.semc.rc:root/init.semc.rc \
     $(LOCAL_PATH)/config/init.sony.rc:root/init.sony.rc \
-    $(LOCAL_PATH)/config/ueventd.semc.rc:root/ueventd.semc.rc
-
-# Normal/Native/Loop
-ifeq ($(BUILD_TARGET),native)
-    PRODUCT_COPY_FILES += \
-        $(LOCAL_PATH)/config/fstab.semc:root/fstab.semc \
-        $(LOCAL_PATH)/config/init.sony-platform.native.rc:root/init.sony-platform.rc
-else ifeq ($(BUILD_TARGET),loop)
-    PRODUCT_COPY_FILES += \
-        $(LOCAL_PATH)/config/fstab.loop.semc:root/fstab.semc \
-        $(LOCAL_PATH)/config/init.sony-platform.loop.rc:root/init.sony-platform.rc
-    PRODUCT_PACKAGES += \
-        losetup-static
-else
-    PRODUCT_COPY_FILES += \
-        $(LOCAL_PATH)/config/fstab.semc:root/fstab.semc \
-        $(LOCAL_PATH)/config/init.sony-platform.rc:root/init.sony-platform.rc
-endif
+    $(LOCAL_PATH)/config/ueventd.semc.rc:root/ueventd.semc.rc \
+    $(LOCAL_PATH)/config/fstab.semc:root/fstab.semc \
+    $(LOCAL_PATH)/config/init.sony-platform.rc:root/init.sony-platform.rc
 
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -211,6 +190,12 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/config/simple_remote.kl:system/usr/keylayout/simple_remote.kl \
     $(LOCAL_PATH)/config/simple_remote_appkey.kl:system/usr/keylayout/simple_remote_appkey.kl
 
+# Ramdisk recovery support
+PRODUCT_COPY_FILES += \
+    device/sony/aoba/recovery/bootrec-device:recovery/root/etc/bootrec-device \
+    device/sony/aoba/recovery/postrecoveryboot.sh:recovery/root/sbin/postrecoveryboot.sh \
+    device/sony/aoba/recovery/rebootrecovery.sh:recovery/root/sbin/rebootrecovery.sh
+
 # Software
 PRODUCT_PACKAGES += \
     libemoji \
@@ -220,17 +205,12 @@ PRODUCT_PACKAGES += \
     Stk
 
 PRODUCT_PACKAGES += \
-    busybox
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/bootanimation.zip:system/media/bootanimation.zip
-
-PRODUCT_PROPERTY_OVERRIDES += \
-    qemu.hw.mainkeys=1
-
-# Recovery
-PRODUCT_PACKAGES += \
+    busybox \
     extract_elf_ramdisk
+
+PRODUCT_PACKAGES += \
+    FujiLayout \
+    fileman
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 

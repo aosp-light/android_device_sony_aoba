@@ -1,9 +1,7 @@
-## Disabled by CBUT - it doesn't work with Fuji
 import init.sony-platform.rc
 
 on boot
   # Override the value set in rootdir/init.rc
-  
 
 on post-fs
     mkdir /data/tombstones 0755 system system
@@ -16,11 +14,6 @@ on post-fs
 
 on early-boot
     # Make sure the crashsms/crashes are writable by crashmonitor
-    
-    
-
-    
-    
 
 service iddd /system/bin/iddd
     class main

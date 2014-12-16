@@ -1,31 +1,9 @@
-# Copyright (c) 2009-2012, Code Aurora Forum. All rights reserved.
 #
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#     * Redistributions of source code must retain the above copyright
-#       notice, this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright
-#       notice, this list of conditions and the following disclaimer in the
-#       documentation and/or other materials provided with the distribution.
-#     * Neither the name of Code Aurora nor
-#       the names of its contributors may be used to endorse or promote
-#       products derived from this software without specific prior written
-#       permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NON-INFRINGEMENT ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Copyright (C) 2014-2015, BPaul
 #
 
 import init.sony.rc
+import init.sony.usb.rc
 
 on init
     # Set permissions for persist partition
@@ -34,27 +12,22 @@ on init
     # create mountpoints
     export EXTERNAL_STORAGE /storage/sdcard0
     export SECONDARY_STORAGE /storage/sdcard1
-    export MEDIA_STORAGE /mnt/media_rw/sdcard0
+
     mkdir /storage 0050 system sdcard_r
     mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
     mkdir /storage/sdcard0 0700 root root
-    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw 
-    mkdir /storage/sdcard1 0700 root root 
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /storage/sdcard1 0700 root root
     mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
     mkdir /storage/usbdisk 0700 root root
 
     # for backwards compatibility
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
+    symlink /storage/sdcard1 /external_sd
+    symlink /storage/sdcard1 /mnt/external_sd
     symlink /storage/usbdisk /usbdisk
     symlink /storage/usbdisk /mnt/usbdisk
-
-on early-boot
-    # set RLIMIT_MEMLOCK to 64MB
-    setrlimit 8 67108864 67108864
-
-on early-init
-
 
 on boot
     #Create QMUX deamon socket area
@@ -78,7 +51,6 @@ on boot
 
     #Remove SUID bit for iproute2 ip tool
     chmod 0755 /system/bin/ip
-
 
     chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
 
@@ -126,12 +98,6 @@ on boot
     # connections on high-throughput links get dropped when
     # an ack packet comes out of order
     write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
-    
-    # Stamina Mode
-    chown system system /sys/devices/platform/sony_ssm/enable
-    chown system system /sys/devices/platform/sony_ssm/set_late_resume_notifications
-    chown system system /sys/devices/platform/sony_ssm/set_request_next_suspend_prepare_notification
-
 
 # msm specific files that need to be created on /data
 on post-fs-data
@@ -183,7 +149,6 @@ service usbhub_init /system/bin/usbhub_init
 
 on property:init.svc.surfaceflinger=stopped
     stop ppd
-    stop hdmid
 
 on property:ro.board.platform=msm7630_fusion
     start usbhub_init
@@ -254,12 +219,6 @@ service netmgrd /system/bin/netmgrd
     class main
     disabled
 
-service sensors /system/bin/sensors.qcom
-    class late_start
-    user root
-    group root
-    disabled
-
 on property:ro.use_data_netmgrd=false
     # netmgr not supported on specific target
     stop netmgrd
@@ -291,18 +250,6 @@ service location_mq /system/bin/location-mq
     class late_start
     user gps
     group gps
-    disabled
-
-service xtwifi_inet /system/bin/xtwifi-inet-agent
-    class late_start
-    user gps
-    group inet gps
-    disabled
-
-service xtwifi_client /system/bin/xtwifi-client
-    class late_start
-    user gps
-    group net_admin wifi inet gps
     disabled
 
 service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
@@ -350,11 +297,6 @@ service atfwd /system/bin/ATFWD-daemon
     class late_start
     user system
     group system radio
-
-service hdmid /system/bin/hdmid
-    class late_start
-    socket hdmid stream 0660 root system graphics
-    disabled
 
 service ppd /system/bin/mm-pp-daemon
     class late_start
@@ -424,9 +366,9 @@ service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0
     class late_start
     disabled
 
-service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1 
-    class late_start 
-    disabled 
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
+    class late_start
+    disabled
 
 service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk /storage/usbdisk
     class late_start

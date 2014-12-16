@@ -1,5 +1,9 @@
-ifneq ($(filter aoba,$(TARGET_DEVICE)),)
+#
+# Copyright 2014-2015, BPaul
+#
+
 LOCAL_PATH := $(call my-dir)
+
+ifneq ($(filter aoba,$(TARGET_DEVICE)),)
 include $(call all-makefiles-under,$(LOCAL_PATH))
-include kernel/sony/msm8x60/AndroidKernel.mk
 endif

@@ -17,7 +17,7 @@
 #ifndef _BDROID_BUILDCFG_H
 #define _BDROID_BUILDCFG_H
 
-#define BTM_DEF_LOCAL_NAME   "Xperia Ion"
-#define BTA_DISABLE_DELAY 3000 /* in milliseconds */
+#define BTM_DEF_LOCAL_NAME   "LT28i"
+#define BTA_DISABLE_DELAY 1000 /* in milliseconds */
 
 #endif
